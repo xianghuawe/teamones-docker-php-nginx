@@ -2,10 +2,13 @@ FROM alpine:3.12
 LABEL Maintainer="Tim de Pater <code@trafex.nl>" \
       Description="Lightweight container with Nginx 1.18 & PHP-FPM 7.3 based on Alpine Linux."
 
+ENV SWOOLE_VERSION=${swoole:-"4.5.3"}
+
 # Install packages and remove default server definition
 RUN apk --no-cache add php7 php7-fpm php7-opcache php7-mysqli php7-pdo php7-pdo_mysql php7-pdo_sqlite php7-json php7-ftp php7-openssl php7-curl \
     php7-zip php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session php7-fileinfo \
-    php7-sockets php7-redis php7-bcmath php7-calendar php7-mbstring php7-gd php7-dev nginx supervisor curl && \
+    php7-sockets php7-redis php7-bcmath php7-calendar php7-mbstring php7-gd php7-dev php7-pear nginx supervisor curl \
+    autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev zlib-dev libtool automake libaio-dev openssl-dev && \
     rm /etc/nginx/conf.d/default.conf
 
 # Configure nginx
@@ -16,9 +19,27 @@ COPY config/fpm-pool.conf /etc/php7/php-fpm.d/www.conf
 COPY config/php.ini /etc/php7/conf.d/custom.ini
 
 ## 以下 是 swoole
-RUN printf "no\n" | pecl install swoole \
-   && pecl clear-cache \
-   && echo "extension=swoole" >> /etc/php7/conf.d/custom.ini
+RUN   cd /tmp \
+      && curl -SL "https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz" -o swoole.tar.gz \
+      && ls -alh \
+      # php extension:swoole
+     && cd /tmp \
+     && mkdir -p swoole \
+     && tar -xf swoole.tar.gz -C swoole --strip-components=1 \
+     && ( \
+     cd swoole \
+     && phpize \
+     && ./configure --enable-mysqlnd --enable-openssl \
+     && make -s -j$(nproc) && make install \
+     ) \
+     && printf "extension=swoole.so\n\
+     swoole.use_shortname = 'Off'\n\
+     swoole.enable_coroutine = 'Off'\n\
+     " >/etc/php7/conf.d/00_swoole.ini \
+     # clear
+     && php -v \
+     && php -m \
+     && php --ri swoole \
 
 # Configure supervisord
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
