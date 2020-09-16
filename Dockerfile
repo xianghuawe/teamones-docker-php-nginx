@@ -19,7 +19,7 @@ COPY config/php.ini /etc/php7/conf.d/custom.ini
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Setup document root
-RUN mkdir -p /var/www/html
+RUN mkdir -p /var/www/public
 
 # Make sure files/folders needed by the processes are accessable when they run under the nobody user
 RUN chown -R nobody.nobody /var/www/html && \
@@ -31,8 +31,8 @@ RUN chown -R nobody.nobody /var/www/html && \
 USER nobody
 
 # Add application
-WORKDIR /var/www/html
-COPY --chown=nobody src/ /var/www/html/
+WORKDIR /var/www/public
+COPY --chown=nobody src/ /var/www/public/
 
 # Expose the port nginx is reachable on
 EXPOSE 8080
