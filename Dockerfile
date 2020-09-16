@@ -3,9 +3,9 @@ LABEL Maintainer="Tim de Pater <code@trafex.nl>" \
       Description="Lightweight container with Nginx 1.18 & PHP-FPM 7.3 based on Alpine Linux."
 
 # Install packages and remove default server definition
-RUN apk --no-cache add php7.4 php7.4-fpm php7.4-opcache php7.4-mysqli php7.4-pdo php7.4-pdo_mysql php7.4-pdo_sqlite php7.4-json php7.4-ftp php7.4-openssl php7.4-curl \
-    php7.4-zip php7.4-zlib php7.4-xml php7.4-phar php7.4-intl php7.4-dom php7.4-xmlreader php7.4-ctype php7.4-session php7.4-fileinfo \
-    php7.4-sockets php7.4-redis php7.4-bcmath php7.4-calendar php7.4-mbstring php7.4-gd php7.4-dev nginx supervisor curl && \
+RUN apk --no-cache add php7 php7-fpm php7-opcache php7-mysqli php7-pdo php7-pdo_mysql php7-pdo_sqlite php7-json php7-ftp php7-openssl php7-curl \
+    php7-zip php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session php7-fileinfo \
+    php7-sockets php7-redis php7-bcmath php7-calendar php7-mbstring php7-gd php7-dev nginx supervisor curl && \
     rm /etc/nginx/conf.d/default.conf
 
 # Configure nginx
@@ -14,6 +14,11 @@ COPY config/nginx.conf /etc/nginx/nginx.conf
 # Configure PHP-FPM
 COPY config/fpm-pool.conf /etc/php7/php-fpm.d/www.conf
 COPY config/php.ini /etc/php7/conf.d/custom.ini
+
+## 以下 是 swoole
+RUN printf "no\n" | pecl install swoole \
+   && pecl clear-cache \
+   && echo "extension=swoole" >> /etc/php7/conf.d/custom.ini
 
 # Configure supervisord
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
