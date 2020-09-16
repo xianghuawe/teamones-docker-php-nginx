@@ -27,7 +27,7 @@ RUN cd /tmp/swoole-src-${SWOOLE_VERSION} \
     && make clean > /dev/null \
     && make \
     && make install \
-    && echo "extension=swoole.so\swoole.use_shortname='Off'\swoole.enable_coroutine='Off'" > ${INIT_FILE}/etc/php7/conf.d/00_swoole.ini \
+    && echo "extension=swoole.so\swoole.use_shortname='Off'\swoole.enable_coroutine='Off'" > /etc/php7/conf.d/00_swoole.ini \
     && rm -f /tmp/swoole-${SWOOLE_VERSION}.tar.gz \
     && rm -rf /tmp/swoole-src-${SWOOLE_VERSION}
 
