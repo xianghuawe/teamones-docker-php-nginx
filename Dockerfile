@@ -21,7 +21,7 @@ COPY config/php.ini /etc/php7/conf.d/custom.ini
 
 ## 以下 是 swoole
 ADD install/swoole-${SWOOLE_VERSION}.tar.gz /tmp/
-RUN cd /tmp/swoole-src-${SWOOLE_VERSION} \
+RUN cd /tmp/swoole-${SWOOLE_VERSION} \
     && phpize \
     && ./configure --enable-mysqlnd --enable-openssl \
     && make clean > /dev/null \
