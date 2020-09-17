@@ -10,6 +10,7 @@ RUN apk --no-cache add php7 php7-fpm php7-opcache php7-mysqli php7-pdo php7-pdo_
 
 # 安装event扩展
 RUN pecl install event \
+    && chmod -R 755 /usr/lib/php7/modules/event.so \
     && echo extension=event.so > /etc/php7/conf.d/00_event.ini \
     && pecl clear-cache
 
@@ -25,24 +26,20 @@ COPY config/php.ini /etc/php7/conf.d/custom.ini
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Setup document root
-RUN mkdir -p /var/www/public
+RUN mkdir -p /var/www
 
 # Make sure files/folders needed by the processes are accessable when they run under the nobody user
-RUN chown -R nobody.nobody /var/www/public && \
+RUN chown -R nobody.nobody /var/www && \
   chown -R nobody.nobody /run
 
 # Switch to use a non-root user from here on
 USER nobody
 
 # Add application
-WORKDIR /var/www/public
-COPY --chown=nobody src/ /var/www/public/
+WORKDIR /var/www
 
 # Expose the port is reachable on
 EXPOSE 8080
 
-# Let supervisord start & php-fpm
+# Let supervisord start & webman
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
-# Configure a healthcheck to validate that everything is up&running
-# HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/fpm-ping
