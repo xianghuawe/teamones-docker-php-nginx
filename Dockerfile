@@ -34,7 +34,7 @@ RUN chown -R nobody.nobody /var/www && \
   chown -R nobody.nobody /run
 
 # Switch to use a non-root user from here on
-USER nobody
+USER root
 
 # Add application
 WORKDIR /var/www
