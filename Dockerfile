@@ -11,7 +11,7 @@ RUN apk --no-cache add php7 php7-fpm php7-opcache php7-mysqli php7-pdo php7-pdo_
 # 安装event扩展
 RUN pecl install event \
     && chmod -R 755 /usr/lib/php7/modules/event.so \
-    && echo extension=event.so > /etc/php7/conf.d/00_event.ini \
+    && echo extension=event.so > /etc/php7/conf.d/00_sockets.ini \
     && pecl clear-cache
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
