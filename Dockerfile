@@ -15,7 +15,8 @@ RUN pecl install event \
     && pecl clear-cache
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
-    && composer self-update
+    && composer self-update \
+    && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 # Configure PHP-FPM
 COPY config/fpm-pool.conf /etc/php7/php-fpm.d/www.conf
