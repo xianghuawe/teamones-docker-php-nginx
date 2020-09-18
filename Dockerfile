@@ -4,15 +4,19 @@ LABEL Maintainer="weijer <weiwei163@foxmail.com>" \
 
 # Install packages and remove default server definition
 RUN set -x \
-    && echo "https://repos.php.earth/alpine/v3.9" >> /etc/apk/repositories
+    && apk add --no-cache wget ca-certificates \
+       && wget -O /etc/apk/keys/phpearth.rsa.pub https://repos.php.earth/alpine/phpearth.rsa.pub \
+       && echo "https://repos.php.earth/alpine/v3.9" >> /etc/apk/repositories
 
-RUN apk add --no-cache php7.4 php7.4-fpm php7.4-opcache php7.4-mysqli php7.4-pdo php7.4-pdo_mysql php7.4-pdo_sqlite php7.4-json php7.4-ftp php7.4-openssl php7.4-curl \
-    php7.4-zip php7.4-zlib php7.4-xml php7.4-phar php7.4-intl php7.4-dom php7.4-xmlreader php7.4-ctype php7.4-session php7.4-fileinfo php7.4-pcntl php7.4-posix \
-    php7.4-sockets php7.4-redis php7.4-bcmath php7.4-calendar php7.4-mbstring php7.4-gd php7.4-iconv supervisor curl tar tzdata  \
-    autoconf dpkg-dev dpkg file g++ gcc libc-dev make php7.4-dev php7.4-pear pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake
+RUN apk search --no-cache php7.4*
 
-
-RUN php -v
+#RUN apk add --no-cache php7.4 php7.4-fpm php7.4-opcache php7.4-mysqli php7.4-pdo php7.4-pdo_mysql php7.4-pdo_sqlite php7.4-json php7.4-ftp php7.4-openssl php7.4-curl \
+#    php7.4-zip php7.4-zlib php7.4-xml php7.4-phar php7.4-intl php7.4-dom php7.4-xmlreader php7.4-ctype php7.4-session php7.4-fileinfo php7.4-pcntl php7.4-posix \
+#    php7.4-sockets php7.4-redis php7.4-bcmath php7.4-calendar php7.4-mbstring php7.4-gd php7.4-iconv supervisor curl tar tzdata  \
+#    autoconf dpkg-dev dpkg file g++ gcc libc-dev make php7.4-dev php7.4-pear pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake
+#
+#
+#RUN php -v
 
 ## 安装event扩展
 #RUN pecl install event \
