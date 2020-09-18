@@ -9,11 +9,9 @@ RUN apk --update-cache add ca-certificates && \
     echo "https://dl.bintray.com/php-alpine/v3.11/php-7.4" >> /etc/apk/repositories
 
 RUN apk --no-cache add php php-fpm php-opcache php-mysqli php-pdo php-pdo_mysql php-pdo_sqlite php-json php-ftp php-openssl php-curl \
-    php-zip php-zlib php-xml php-phar php-intl php-dom php-xmlreader php-ctype php-session php-pcntl php-posix \
+    php-zip php-zlib php-xml php-phar php-dom php-xmlreader php-ctype php-session php-pcntl php-posix \
     php-sockets php-redis php-bcmath php-calendar php-mbstring php-gd php-iconv supervisor curl tar tzdata  \
     autoconf dpkg-dev dpkg file g++ gcc libc-dev make php-dev php-pear pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake
-
-RUN php -ini
 
 # 安装event扩展
 RUN pecl install event \
