@@ -30,22 +30,22 @@ RUN apk --no-cache add php php-fpm php-opcache php-mysqli php-pdo php-pdo_mysql 
 #
 ## Configure supervisord
 #COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-#
-## Setup document root
-#RUN mkdir -p /var/www
-#
-## Make sure files/folders needed by the processes are accessable when they run under the nobody user
-#RUN chown -R nobody.nobody /var/www && \
-#  chown -R nobody.nobody /run
-#
-## Switch to use a non-root user from here on
-#USER root
-#
+
+# Setup document root
+RUN mkdir -p /var/www
+
+# Make sure files/folders needed by the processes are accessable when they run under the nobody user
+RUN chown -R nobody.nobody /var/www && \
+  chown -R nobody.nobody /run
+
+# Switch to use a non-root user from here on
+USER root
+
 ## Add application
-#WORKDIR /var/www
-#
+WORKDIR /var/www
+
 ## Expose the port is reachable on
-#EXPOSE 8080
+EXPOSE 8080
 #
 ## Let supervisord start & webman
 #CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
