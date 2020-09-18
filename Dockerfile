@@ -2,16 +2,17 @@ FROM alpine:3.12
 LABEL Maintainer="weijer <weiwei163@foxmail.com>" \
       Description="Lightweight container with PHP-FPM 7.4 based on Alpine Linux."
 
+# Install packages and remove default server definition
+RUN set -x \
+    && echo "https://repos.php.earth/alpine/v3.9" >> /etc/apk/repositories
 
-ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
+RUN apk add --no-cache php7 php7-fpm php7-opcache php7-mysqli php7-pdo php7-pdo_mysql php7-pdo_sqlite php7-json php7-ftp php7-openssl php7-curl \
+    php7-zip php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session php7-fileinfo php7-pcntl php7-posix \
+    php7-sockets php7-redis php7-bcmath php7-calendar php7-mbstring php7-gd php7-iconv supervisor curl tar tzdata  \
+    autoconf dpkg-dev dpkg file g++ gcc libc-dev make php7-dev php7-pear pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake
 
-RUN apk --update-cache add ca-certificates && \
-    echo "https://dl.bintray.com/php-alpine/v3.11/php-7.4" >> /etc/apk/repositories
 
-RUN apk --no-cache add php php-fpm php-opcache php-mysqli php-pdo php-pdo_mysql php-pdo_sqlite php-json php-ftp php-openssl php-curl \
-    php-zip php-zlib php-xml php-phar php-dom php-xmlreader php-ctype php-session php-pcntl php-posix \
-    php-sockets php-redis php-bcmath php-calendar php-mbstring php-gd php-iconv supervisor curl tar tzdata  \
-    autoconf dpkg-dev dpkg file g++ gcc libc-dev make php-dev php-pear pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake
+RUN php -v
 
 ## 安装event扩展
 #RUN pecl install event \
@@ -32,20 +33,20 @@ RUN apk --no-cache add php php-fpm php-opcache php-mysqli php-pdo php-pdo_mysql 
 #COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Setup document root
-RUN mkdir -p /var/www
-
-# Make sure files/folders needed by the processes are accessable when they run under the nobody user
-RUN chown -R nobody.nobody /var/www && \
-  chown -R nobody.nobody /run
-
-# Switch to use a non-root user from here on
-USER root
-
-## Add application
-WORKDIR /var/www
-
-## Expose the port is reachable on
-EXPOSE 8080
+#RUN mkdir -p /var/www
 #
+## Make sure files/folders needed by the processes are accessable when they run under the nobody user
+#RUN chown -R nobody.nobody /var/www && \
+#  chown -R nobody.nobody /run
+#
+## Switch to use a non-root user from here on
+#USER root
+#
+### Add application
+#WORKDIR /var/www
+#
+### Expose the port is reachable on
+#EXPOSE 8080
+
 ## Let supervisord start & webman
 #CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
