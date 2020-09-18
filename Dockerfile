@@ -15,8 +15,8 @@ RUN apk --no-cache add php php-fpm php-opcache php-mysqli php-pdo php-pdo_mysql 
 
 # 安装event扩展
 RUN pecl install event \
-    && chmod -R 755 /usr/lib/php/modules/event.so \
-    && echo extension=event.so >> /etc/php/conf.d/00_sockets.ini \
+    && chmod -R 755 /usr/lib/php7/modules/event.so \
+    && echo extension=event.so >> /etc/php7/conf.d/00_sockets.ini \
     && pecl clear-cache
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
@@ -24,8 +24,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
     && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 # Configure PHP-FPM
-COPY config/fpm-pool.conf /etc/php/php-fpm.d/www.conf
-COPY config/php.ini /etc/php/conf.d/custom.ini
+COPY config/fpm-pool.conf /etc/php7/php-fpm.d/www.conf
+COPY config/php.ini /etc/php7/conf.d/custom.ini
 
 
 # Configure supervisord
