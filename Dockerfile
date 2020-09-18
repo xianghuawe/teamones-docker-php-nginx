@@ -2,10 +2,10 @@ FROM alpine:3.12
 LABEL Maintainer="Tim de Pater <code@trafex.nl>" \
       Description="Lightweight container with Nginx 1.18 & PHP-FPM 7.3 based on Alpine Linux."
 
-# Install packages and remove default server definition
-RUN set -x \
-    && echo "https://repos.php.earth/alpine/v3.9" >> /etc/apk/repositories
 
+RUN apk add --no-cache wget ca-certificates \
+    && wget -O /etc/apk/keys/phpearth.rsa.pub https://repos.php.earth/alpine/phpearth.rsa.pub \
+    && echo "https://repos.php.earth/alpine/v3.9" >> /etc/apk/repositories
 
 RUN apk --no-cache add php7.4 php7.4-fpm php7.4-opcache php7.4-mysqli php7.4-pdo php7.4-pdo_mysql php7.4-pdo_sqlite php7.4-json php7.4-ftp php7.4-openssl php7.4-curl \
     php7.4-zip php7.4-zlib php7.4-xml php7.4-phar php7.4-intl php7.4-dom php7.4-xmlreader php7.4-ctype php7.4-session php7.4-fileinfo php7.4-pcntl php7.4-posix \
