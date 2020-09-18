@@ -8,15 +8,15 @@ ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-a
 RUN apk --update-cache add ca-certificates && \
     echo "https://dl.bintray.com/php-alpine/v3.11/php-7.4" >> /etc/apk/repositories
 
-RUN apk --no-cache add php7 php7-fpm php7-opcache php7-mysqli php7-pdo php7-pdo_mysql php7-pdo_sqlite php7-json php7-ftp php7-openssl php7-curl \
-    php7-zip php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session php7-fileinfo php7-pcntl php7-posix \
-    php7-sockets php7-redis php7-bcmath php7-calendar php7-mbstring php7-gd php7-iconv supervisor curl tar tzdata  \
-    autoconf dpkg-dev dpkg file g++ gcc libc-dev make php7-dev php7-pear pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake
+RUN apk --no-cache add php php-fpm php-opcache php-mysqli php-pdo php-pdo_mysql php-pdo_sqlite php-json php-ftp php-openssl php-curl \
+    php-zip php-zlib php-xml php-phar php-intl php-dom php-xmlreader php-ctype php-session php-fileinfo php-pcntl php-posix \
+    php-sockets php-redis php-bcmath php-calendar php-mbstring php-gd php-iconv supervisor curl tar tzdata  \
+    autoconf dpkg-dev dpkg file g++ gcc libc-dev make php-dev php-pear pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake
 
 # 安装event扩展
 RUN pecl install event \
-    && chmod -R 755 /usr/lib/php7/modules/event.so \
-    && echo extension=event.so >> /etc/php7/conf.d/00_sockets.ini \
+    && chmod -R 755 /usr/lib/php/modules/event.so \
+    && echo extension=event.so >> /etc/php/conf.d/00_sockets.ini \
     && pecl clear-cache
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
@@ -24,8 +24,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
     && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 # Configure PHP-FPM
-COPY config/fpm-pool.conf /etc/php7/php-fpm.d/www.conf
-COPY config/php.ini /etc/php7/conf.d/custom.ini
+COPY config/fpm-pool.conf /etc/php/php-fpm.d/www.conf
+COPY config/php.ini /etc/php/conf.d/custom.ini
 
 
 # Configure supervisord
