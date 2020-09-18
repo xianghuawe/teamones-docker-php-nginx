@@ -8,7 +8,9 @@ RUN set -x \
        && wget -O /etc/apk/keys/phpearth.rsa.pub https://repos.php.earth/alpine/phpearth.rsa.pub \
        && echo "https://repos.php.earth/alpine/v3.9" >> /etc/apk/repositories
 
-RUN apk add --no-cache php7.4-7.4.0-r2
+RUN apk search --no-cache php7.4*
+
+RUN apk add --no-cache php7.4
 
 #RUN apk add --no-cache php7.4 php7.4-fpm php7.4-opcache php7.4-mysqli php7.4-pdo php7.4-pdo_mysql php7.4-pdo_sqlite php7.4-json php7.4-ftp php7.4-openssl php7.4-curl \
 #    php7.4-zip php7.4-zlib php7.4-xml php7.4-phar php7.4-intl php7.4-dom php7.4-xmlreader php7.4-ctype php7.4-session php7.4-fileinfo php7.4-pcntl php7.4-posix \
