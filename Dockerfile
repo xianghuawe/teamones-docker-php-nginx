@@ -34,14 +34,17 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chown -R nobody.nobody /run
 
 # Setup document root
-RUN mkdir -p /var/www
+RUN mkdir -p /app
+
+# Make the document root a volume
+VOLUME /app
 
 #echo " > /usr/local/etc/php/conf.d/phalcon.ini
 # Switch to use a non-root user from here on
 USER root
 
 # Add application
-WORKDIR /var/www
+WORKDIR /app
 
 # Expose the port nginx is reachable on
 EXPOSE 8080
