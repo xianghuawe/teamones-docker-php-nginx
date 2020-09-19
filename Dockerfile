@@ -81,7 +81,7 @@ RUN chown -R nobody.nobody /var/www/public && \
   chown -R nobody.nobody /var/log/nginx
 
 # Switch to use a non-root user from here on
-USER root
+USER nobody
 
 # Add application
 WORKDIR /var/www/public
