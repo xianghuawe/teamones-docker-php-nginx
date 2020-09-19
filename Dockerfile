@@ -15,6 +15,8 @@ RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo_mysql my
 
 RUN apk add php7-pecl-redis
 
+RUN php -m
+
 # Add Composer
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 
