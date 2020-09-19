@@ -14,12 +14,10 @@ RUN apk update && apk upgrade && apk add \
 RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo_mysql mysqli bcmath calendar gd ldap
 
 RUN pecl install -o -f redis \
-    &&  rm -rf /tmp/pear \
-    &&  docker-php-ext-enable redis
-
-RUN pecl install -o -f event \
-    &&  rm -rf /tmp/pear \
-    &&  docker-php-ext-enable event
+    && pecl install -o -f event \
+    &&  docker-php-ext-enable redis \
+    && echo extension=event.so >> /usr/local/etc/php/conf.d/docker-php-ext-sockets.ini \ #event扩展必须在socket扩展后面
+    && pecl clear-cache
 
 RUN php -m
 
