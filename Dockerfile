@@ -13,7 +13,13 @@ RUN apk update && apk upgrade && apk add \
 
 RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo_mysql mysqli bcmath calendar gd ldap
 
-RUN apk add php7-pecl-redis
+RUN pecl install -o -f redis \
+    &&  rm -rf /tmp/pear \
+    &&  docker-php-ext-enable redis
+
+RUN pecl install -o -f event \
+    &&  rm -rf /tmp/pear \
+    &&  docker-php-ext-enable event
 
 RUN php -m
 
