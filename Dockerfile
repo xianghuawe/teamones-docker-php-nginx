@@ -25,7 +25,7 @@ RUN php -m
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 
 # Configure PHP
-COPY config/php.ini /etc/php7/conf.d/zzz_custom.ini
+COPY config/php.ini /usr/local/etc/php/conf.d/zzz_custom.ini
 
 # Configure supervisord
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
