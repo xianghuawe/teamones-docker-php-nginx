@@ -14,6 +14,18 @@ RUN pecl install event \
     && echo extension=event.so >> /etc/php7/conf.d/00_sockets.ini \
     && pecl clear-cache
 
+# 安装grpc扩展
+RUN pecl install grpc-1.30.0 \
+    && chmod -R 755 /usr/lib/php7/modules/grpc.so \
+    && echo extension=grpc.so >> /etc/php7/conf.d/00_grpc.ini \
+    && pecl clear-cache
+
+# 安装protobuf扩展
+RUN pecl install protobuf \
+    && chmod -R 755 /usr/lib/php7/modules/protobuf.so \
+    && echo extension=protobuf.so >> /etc/php7/conf.d/00_protobuf.ini \
+    && pecl clear-cache
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
     && composer self-update \
     && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
