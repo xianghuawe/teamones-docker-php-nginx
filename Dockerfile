@@ -6,8 +6,7 @@ LABEL Maintainer="Tim de Pater <code@trafex.nl>" \
 RUN apk update && \
     apk --no-cache add php7 php7-fpm php7-opcache php7-mysqli php7-pdo php7-pdo_mysql php7-pdo_sqlite php7-json php7-ftp php7-openssl php7-curl \
     php7-zip php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session php7-fileinfo php7-tokenizer php7-simplexml php7-xmlwriter php7-amqp \
-    php7-sockets php7-redis php7-bcmath php7-calendar php7-mbstring php7-gd php7-iconv nginx supervisor curl tar tzdata \
-    && rm /etc/nginx/conf.d/default.conf
+    php7-sockets php7-redis php7-bcmath php7-calendar php7-mbstring php7-gd php7-iconv supervisor curl tar tzdata go
 
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing gnu-libiconv
 
@@ -59,12 +58,7 @@ RUN set -ex \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
     && composer self-update
 
-
-# Configure nginx
-COPY config/nginx.conf /etc/nginx/nginx.conf
-
 # Configure PHP-FPM
-COPY config/fpm-pool.conf /etc/php7/php-fpm.d/www.conf
 COPY config/php.ini /etc/php7/conf.d/custom.ini
 
 
@@ -76,9 +70,7 @@ RUN mkdir -p /var/www/public
 
 # Make sure files/folders needed by the processes are accessable when they run under the nobody user
 RUN chown -R root.root /var/www/public && \
-  chown -R root.root /run && \
-  chown -R root.root /var/lib/nginx && \
-  chown -R root.root /var/log/nginx
+  chown -R root.root /run
 
 # Switch to use a non-root user from here on
 USER root
