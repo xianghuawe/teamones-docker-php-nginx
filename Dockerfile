@@ -76,8 +76,8 @@ RUN chown -R root.root /var/www/public && \
 USER root
 
 # Add application
-WORKDIR /var/www/public
-COPY --chown=root src/ /var/www/public/
+WORKDIR /var/www
+COPY --chown=root src/ /var/www/
 
 # Expose the port nginx is reachable on
 EXPOSE 8080
