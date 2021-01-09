@@ -11,13 +11,55 @@ RUN apk update && apk upgrade && apk add \
 	    autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake \
         openldap openldap-dev supervisor
 
-RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo_mysql mysqli bcmath calendar gd ldap
+RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo pdo_mysql mysqli bcmath calendar gd ldap json ftp openssl curl zlib xml phar \
+    dom xmlreader ctype session fileinfo tokenizer simplexml xmlwriter amqp mbstring iconv dev pear
 
 RUN pecl install -o -f redis \
     && pecl install -o -f event \
     && docker-php-ext-enable redis \
     && echo extension=event.so >> /usr/local/etc/php/conf.d/docker-php-ext-sockets.ini \
     && pecl clear-cache
+
+ARG swoole
+
+##
+# ---------- env settings ----------
+##
+ENV SWOOLE_VERSION=${swoole:-"4.5.10"} \
+        #  install and remove building packages
+        PHPIZE_DEPS="autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev zlib-dev libtool automake"
+
+# update
+RUN set -ex \
+        && apk update \
+        # for swoole extension libaio linux-headers
+        && apk add --no-cache libstdc++ openssl git bash \
+        && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS libaio-dev openssl-dev \
+        # download
+        && cd /tmp \
+        && curl -SL "https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz" -o swoole.tar.gz \
+        && ls -alh \
+        # php extension:swoole
+        && cd /tmp \
+        && mkdir -p swoole \
+        && tar -xf swoole.tar.gz -C swoole --strip-components=1 \
+        && ( \
+        cd swoole \
+        && phpize \
+        && ./configure --enable-mysqlnd --enable-openssl \
+        && make -s -j$(nproc) && make install \
+        ) \
+        && printf "extension=swoole.so\n\
+        swoole.use_shortname = 'Off'\n\
+        swoole.enable_coroutine = 'Off'\n\
+        " >/usr/local/etc/php/conf.d/swoole.ini \
+        # clear
+        && php -v \
+        && php -m \
+        && php --ri swoole \
+        # ---------- clear works ----------
+        && apk del .build-deps \
+        && rm -rf /var/cache/apk/* /tmp/* /usr/share/man
 
 RUN php -m
 
