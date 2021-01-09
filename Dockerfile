@@ -11,8 +11,7 @@ RUN apk update && apk upgrade && apk add \
 	    autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake \
         openldap openldap-dev supervisor
 
-RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo pdo_mysql mysqli bcmath calendar gd ldap json ftp openssl curl zlib xml phar \
-    dom xmlreader ctype session fileinfo tokenizer simplexml xmlwriter mbstring iconv
+RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo_mysql mysqli bcmath calendar gd ldap
 
 RUN pecl install -o -f redis \
     && pecl install -o -f event \
