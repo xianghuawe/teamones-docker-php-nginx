@@ -12,11 +12,13 @@ RUN apk update && apk upgrade && apk add \
         openldap openldap-dev supervisor
 
 RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo pdo_mysql mysqli bcmath calendar gd ldap json ftp openssl curl zlib xml phar \
-    dom xmlreader ctype session fileinfo tokenizer simplexml xmlwriter amqp mbstring iconv dev pear
+    dom xmlreader ctype session fileinfo tokenizer simplexml xmlwriter mbstring iconv dev pear
 
 RUN pecl install -o -f redis \
     && pecl install -o -f event \
+    && pecl install -o -f amqp \
     && docker-php-ext-enable redis \
+    && docker-php-ext-enable amqp \
     && echo extension=event.so >> /usr/local/etc/php/conf.d/docker-php-ext-sockets.ini \
     && pecl clear-cache
 
