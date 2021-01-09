@@ -1,6 +1,6 @@
-FROM php:7.3.26-cli-alpine
+FROM alpine:3.12
 LABEL Maintainer="Tim de Pater <code@trafex.nl>" \
-      Description="Lightweight container with PHP-FPM 7.3 based on Alpine Linux."
+      Description="Lightweight container with Nginx 1.18 & PHP-FPM 7.3 based on Alpine Linux."
 
 # Install packages and remove default server definition
 RUN apk update && \
