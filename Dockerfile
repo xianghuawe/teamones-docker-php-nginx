@@ -9,7 +9,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 RUN apk update && apk upgrade && apk add \
 	bash curl ca-certificates openssl openssh git nano libxml2-dev tzdata icu-dev openntpd libedit-dev libzip-dev libjpeg-turbo-dev libpng-dev freetype-dev \
 	    autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake \
-        openldap openldap-dev supervisor php-pear php-devel
+        openldap openldap-dev supervisor
 
 RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo pdo_mysql mysqli bcmath calendar gd ldap json ftp openssl curl zlib xml phar \
     dom xmlreader ctype session fileinfo tokenizer simplexml xmlwriter mbstring iconv
@@ -39,10 +39,15 @@ RUN set -ex \
         && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS libaio-dev openssl-dev \
         # download
         && cd /tmp \
+        && curl -SL wget https://dl.bintray.com/php-alpine/v3.12/php-7.4/x86_64/php7-dev-7.4.13-r1.apk \
+        && curl -SL wget https://dl.bintray.com/php-alpine/v3.12/php-7.4/x86_64/php7-pear-7.4.13-r1.apk \
         && curl -SL "https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz" -o swoole.tar.gz \
         && ls -alh \
         # php extension:swoole
         && cd /tmp \
+        # 安装 php7-dev 和 php7-pear
+        && apk add --allow-untrusted php7-dev-7.4.13-r1.apk \
+        && apk add --allow-untrusted php7-pear-7.4.13-r1.apk \
         && mkdir -p swoole \
         && tar -xf swoole.tar.gz -C swoole --strip-components=1 \
         && ( \
