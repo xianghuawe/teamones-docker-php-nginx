@@ -1,35 +1,31 @@
-FROM php:7.4.14-cli-alpine
-LABEL Maintainer="weijer <weiwei163@foxmail.com>" \
-      Description="Webman Lightweight container with PHP 7.4 based on Alpine Linux."
+FROM alpine:3.12
+LABEL Maintainer="Tim de Pater <code@trafex.nl>" \
+      Description="Lightweight container with PHP-FPM 7.3 based on Alpine Linux."
 
-# Add repos
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+# Install packages and remove default server definition
+RUN apk update && \
+    apk --no-cache add php7 php7-fpm php7-opcache php7-mysqli php7-pdo php7-pdo_mysql php7-pdo_sqlite php7-json php7-ftp php7-openssl php7-curl \
+    php7-zip php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session php7-fileinfo php7-tokenizer php7-simplexml php7-xmlwriter php7-amqp \
+    php7-sockets php7-redis php7-bcmath php7-calendar php7-mbstring php7-gd php7-iconv php7-tokenizer supervisor curl tar tzdata libevent-dev
 
-# Add basics first
-RUN apk update && apk upgrade && apk add \
-	bash curl ca-certificates openssl openssh git nano libxml2-dev tzdata icu-dev openntpd libedit-dev libzip-dev libjpeg-turbo-dev libpng-dev freetype-dev \
-	    autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake \
-        openldap openldap-dev supervisor
 
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-
-RUN chmod +x /usr/local/bin/install-php-extensions \
-    && docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo_mysql mysqli bcmath calendar gd ldap amqp
-
-RUN pecl install -o -f redis \
-    && pecl install -o -f event \
-    && docker-php-ext-enable redis \
-    && echo extension=event.so >> /usr/local/etc/php/conf.d/docker-php-ext-sockets.ini \
+RUN pecl install -o -f event \
+    && echo extension=event.so >> /etc/php7/conf.d/00_sockets.ini \
     && pecl clear-cache
+
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing gnu-libiconv
+
+# libiconv load
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 ARG swoole
 
 ##
 # ---------- env settings ----------
 ##
-ENV SWOOLE_VERSION=${swoole:-"4.5.10"} \
+ENV SWOOLE_VERSION=${swoole:-"4.5.3"} \
         #  install and remove building packages
-        PHPIZE_DEPS="autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev zlib-dev libtool automake"
+        PHPIZE_DEPS="autoconf dpkg-dev dpkg file g++ gcc libc-dev make php7-dev php7-pear pkgconf re2c pcre-dev zlib-dev libtool automake"
 
 # update
 RUN set -ex \
@@ -39,15 +35,10 @@ RUN set -ex \
         && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS libaio-dev openssl-dev \
         # download
         && cd /tmp \
-        && wget https://dl.bintray.com/php-alpine/v3.12/php-7.4/x86_64/php7-dev-7.4.13-r1.apk \
-        && wget https://dl.bintray.com/php-alpine/v3.12/php-7.4/x86_64/php7-pear-7.4.13-r1.apk \
         && curl -SL "https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz" -o swoole.tar.gz \
         && ls -alh \
         # php extension:swoole
         && cd /tmp \
-        # 安装 php7-dev 和 php7-pear
-        && apk add --allow-untrusted php7-dev-7.4.13-r1.apk \
-        && apk add --allow-untrusted php7-pear-7.4.13-r1.apk \
         && mkdir -p swoole \
         && tar -xf swoole.tar.gz -C swoole --strip-components=1 \
         && ( \
@@ -59,7 +50,7 @@ RUN set -ex \
         && printf "extension=swoole.so\n\
         swoole.use_shortname = 'Off'\n\
         swoole.enable_coroutine = 'Off'\n\
-        " >/usr/local/etc/php/conf.d/swoole.ini \
+        " >/etc/php7/conf.d/swoole.ini \
         # clear
         && php -v \
         && php -m \
@@ -68,13 +59,14 @@ RUN set -ex \
         && apk del .build-deps \
         && rm -rf /var/cache/apk/* /tmp/* /usr/share/man
 
-RUN php -m
 
-# Add Composer
-RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
+    && composer self-update
 
-# Configure PHP
-COPY config/php.ini /usr/local/etc/php/conf.d/zzz_custom.ini
+
+# Configure PHP-FPM
+COPY config/php.ini /etc/php7/conf.d/custom.ini
+
 
 # Configure supervisord
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -88,7 +80,6 @@ RUN mkdir -p /app
 # Make the document root a volume
 VOLUME /app
 
-#echo " > /usr/local/etc/php/conf.d/phalcon.ini
 # Switch to use a non-root user from here on
 USER root
 
