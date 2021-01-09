@@ -11,13 +11,14 @@ RUN apk update && apk upgrade && apk add \
 	    autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake \
         openldap openldap-dev supervisor
 
-RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo_mysql mysqli bcmath calendar gd ldap
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/install-php-extensions \
+    && docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo_mysql mysqli bcmath calendar gd ldap amqp
 
 RUN pecl install -o -f redis \
     && pecl install -o -f event \
-    && pecl install -o -f amqp \
     && docker-php-ext-enable redis \
-    && docker-php-ext-enable amqp \
     && echo extension=event.so >> /usr/local/etc/php/conf.d/docker-php-ext-sockets.ini \
     && pecl clear-cache
 
