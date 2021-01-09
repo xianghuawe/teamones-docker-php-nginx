@@ -54,8 +54,6 @@ RUN set -ex \
         && apk del .build-deps \
         && rm -rf /var/cache/apk/* /tmp/* /usr/share/man
 
-RUN php -m
-
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
     && composer self-update
