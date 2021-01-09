@@ -9,7 +9,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 RUN apk update && apk upgrade && apk add \
 	bash curl ca-certificates openssl openssh git nano libxml2-dev tzdata icu-dev openntpd libedit-dev libzip-dev libjpeg-turbo-dev libpng-dev freetype-dev \
 	    autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake \
-        openldap openldap-dev supervisor php-pear php-dev
+        openldap openldap-dev supervisor php-pear php-devel
 
 RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo pdo_mysql mysqli bcmath calendar gd ldap json ftp openssl curl zlib xml phar \
     dom xmlreader ctype session fileinfo tokenizer simplexml xmlwriter mbstring iconv
