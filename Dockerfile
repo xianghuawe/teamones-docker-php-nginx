@@ -39,8 +39,8 @@ RUN set -ex \
         && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS libaio-dev openssl-dev \
         # download
         && cd /tmp \
-        && curl -SL wget https://dl.bintray.com/php-alpine/v3.12/php-7.4/x86_64/php7-dev-7.4.13-r1.apk \
-        && curl -SL wget https://dl.bintray.com/php-alpine/v3.12/php-7.4/x86_64/php7-pear-7.4.13-r1.apk \
+        && wget https://dl.bintray.com/php-alpine/v3.12/php-7.4/x86_64/php7-dev-7.4.13-r1.apk \
+        && wget https://dl.bintray.com/php-alpine/v3.12/php-7.4/x86_64/php7-pear-7.4.13-r1.apk \
         && curl -SL "https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz" -o swoole.tar.gz \
         && ls -alh \
         # php extension:swoole
