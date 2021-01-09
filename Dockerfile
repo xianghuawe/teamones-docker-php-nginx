@@ -6,11 +6,7 @@ LABEL Maintainer="Tim de Pater <code@trafex.nl>" \
 RUN apk update && \
     apk --no-cache add php7 php7-fpm php7-opcache php7-mysqli php7-pdo php7-pdo_mysql php7-pdo_sqlite php7-json php7-ftp php7-openssl php7-curl \
     php7-zip php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session php7-fileinfo php7-tokenizer php7-simplexml php7-xmlwriter php7-amqp \
-    php7-sockets php7-redis php7-bcmath php7-calendar php7-mbstring php7-gd php7-iconv php7-tokenizer php7-pcntl php7-posix supervisor curl tar tzdata libevent-dev
-
-RUN pecl install -o -f event \
-    && echo extension=event.so >> /etc/php7/conf.d/00_sockets.ini \
-    && pecl clear-cache
+    php7-event php7-sockets php7-redis php7-bcmath php7-calendar php7-mbstring php7-gd php7-iconv php7-tokenizer php7-pcntl php7-posix supervisor curl tar tzdata libevent-dev
 
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing gnu-libiconv
 
@@ -57,6 +53,8 @@ RUN set -ex \
         # ---------- clear works ----------
         && apk del .build-deps \
         && rm -rf /var/cache/apk/* /tmp/* /usr/share/man
+
+RUN php -m
 
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
