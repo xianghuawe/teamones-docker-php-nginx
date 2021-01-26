@@ -1,9 +1,6 @@
-FROM php:7.4-cli-alpine
+FROM php:7.4.14-cli-alpine3.13
 LABEL Maintainer="weijer <weiwei163@foxmail.com>" \
       Description="Webman Lightweight container with PHP 7.4 based on Alpine Linux."
-
-# Add repos
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
 # Add basics first
 RUN apk update && apk upgrade && apk add \
