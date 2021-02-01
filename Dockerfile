@@ -3,7 +3,7 @@ LABEL Maintainer="weijer <weiwei163@foxmail.com>" \
       Description="Webman Lightweight container with PHP 7.4 based on Alpine Linux."
 
 # Add basics first
-RUN apk update && apk upgrade && apk add \
+RUN apk update && apk upgrade && apk add --no-cache \
 	bash curl ca-certificates openssl openssh git nano libxml2-dev tzdata icu-dev openntpd libedit-dev libzip-dev libjpeg-turbo-dev libpng-dev freetype-dev \
 	    autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake \
         supervisor
