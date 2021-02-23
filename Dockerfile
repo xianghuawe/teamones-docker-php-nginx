@@ -1,20 +1,17 @@
-FROM php:8-cli-alpine
+FROM php:8.0.2-cli-alpine3.13
 LABEL Maintainer="weijer <weiwei163@foxmail.com>" \
       Description="Webman Lightweight container with PHP 8.0 based on Alpine Linux."
-
-# Add repos
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
 # Add basics first
 RUN apk update && apk upgrade && apk add \
 	bash curl ca-certificates openssl openssh git nano libxml2-dev tzdata icu-dev openntpd libedit-dev libzip-dev libjpeg-turbo-dev libpng-dev freetype-dev \
-	    autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake \
-        openldap openldap-dev supervisor
+	autoconf dpkg-dev dpkg file g++ gcc libc-dev make pkgconf re2c pcre-dev openssl-dev libffi-dev libressl-dev libevent-dev zlib-dev libtool automake \
+    supervisor
 
-RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo_mysql mysqli bcmath calendar gd ldap
+RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo_mysql mysqli bcmath calendar gd
 
 RUN pecl install -o -f redis \
-    && pecl install -o -f http://pecl.php.net/get/event-3.0.2.tgz \
+    && pecl install -o -f event \
     && docker-php-ext-enable redis \
     && echo extension=event.so >> /usr/local/etc/php/conf.d/docker-php-ext-sockets.ini \
     && pecl clear-cache
