@@ -17,3 +17,6 @@ RUN pecl install -o -f redis \
     && pecl clear-cache
 
 RUN php -m
+
+# Add Composer
+RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
