@@ -35,7 +35,7 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # 部署node-agent ./deploy_env.sh 服务端IP
 RUN mkdir -p /tmp
 COPY install/swoole-tracker.tar.gz /tmp/swoole-tracker.tar.gz
-RUN tar -C / -xvf /tmp/swoole-tracker.tar.gz && \
+RUN tar -C /swoole-tracker -xvf /tmp/swoole-tracker.tar.gz && \
     cd /swoole-tracker && \
     ./deploy_env.sh 42.193.175.42 && \
     rm /tmp/swoole-tracker.tar.gz
