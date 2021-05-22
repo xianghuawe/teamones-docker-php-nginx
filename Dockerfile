@@ -33,11 +33,10 @@ COPY config/php.ini /usr/local/etc/php/conf.d/zzz_custom.ini
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # 部署node-agent ./deploy_env.sh 服务端IP
-ADD install/swoole-tracker.tar.gz /tmp
-RUN tar -C / -xvf /tmp/swoole-tracker.tar.gz && \
-    cd /swoole-tracker/node-agent && \
+ADD install/swoole-tracker.tar.gz /tmp/swoole-tracker
+RUN cd /tmp/swoole-tracker/node-agent && \
     ./deploy_env.sh 42.193.175.42 && \
-    rm /tmp/swoole-tracker.tar.gz
+    rm -rf /tmp/swoole-tracker
 
 # 添加entrypoint脚本
 RUN printf '#!/bin/sh\n/opt/swoole/script/php/swoole_php /opt/swoole/node-agent/src/node.php $@' > /opt/swoole/entrypoint.sh && \
