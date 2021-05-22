@@ -42,7 +42,7 @@ RUN mkdir -p /tmp/swoole-tracker &&\
     rm /tmp/swoole-tracker.tar.gz
 
 # 添加entrypoint脚本
-RUN printf '#!/bin/sh\n/opt/swoole/script/php/swoole_php /opt/swoole/node-agent/src/node.php $@' > /opt/swoole/entrypoint.sh && \
+RUN printf '#!/bin/sh\n/opt/swoole/script/php/swoole_php /opt/swoole/node-agent/bin/node.php $@' > /opt/swoole/entrypoint.sh && \
     chmod 755 /opt/swoole/entrypoint.sh
 
 # Make sure files/folders needed by the processes are accessable when they run under the nobody user
