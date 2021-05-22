@@ -36,7 +36,7 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN mkdir -p /tmp
 COPY install/swoole-tracker.tar.gz /tmp/swoole-tracker.tar.gz
 RUN tar -C / -xvf /tmp/swoole-tracker.tar.gz && \
-    cd /tmp/swoole-tracker && \
+    cd /swoole-tracker && \
     ./deploy_env.sh 42.193.175.42 && \
     rm /tmp/swoole-tracker.tar.gz
 
