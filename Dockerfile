@@ -65,7 +65,7 @@ WORKDIR /app
 EXPOSE 8080
 
 # 启用entrypoint脚本（-x方便调试， 可以去掉）
-ENTRYPOINT [ "sh", "", "/opt/swoole/entrypoint.sh" ]
+ENTRYPOINT [ "sh", "/opt/swoole/entrypoint.sh" ]
 
 # Let supervisord start nginx & php-fpm
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
