@@ -38,7 +38,7 @@ COPY install/swoole-tracker.tar.gz /tmp/swoole-tracker.tar.gz
 RUN mkdir -p /tmp/swoole-tracker &&\
     tar -C /tmp/swoole-tracker -xvf /tmp/swoole-tracker.tar.gz && \
     cd /tmp/swoole-tracker && \
-    ./deploy_env.sh 42.193.175.42 && \
+    ./deploy_env.sh 10.168.30.14 && \
     rm /tmp/swoole-tracker.tar.gz
 
 # 添加entrypoint脚本
