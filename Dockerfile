@@ -11,7 +11,7 @@ RUN apk update && apk upgrade && apk add \
 RUN docker-php-ext-install soap zip pcntl sockets intl exif opcache pdo_mysql mysqli bcmath calendar gd
 
 RUN pecl install -o -f redis \
-    && pecl install -o -f event \
+    && pecl install -o -f https://pecl.php.net/get/event-3.0.7RC1.tgz \
     && docker-php-ext-enable redis \
     && echo extension=event.so >> /usr/local/etc/php/conf.d/docker-php-ext-sockets.ini \
     && pecl clear-cache
